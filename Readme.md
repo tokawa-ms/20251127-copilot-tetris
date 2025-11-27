@@ -1,4 +1,4 @@
-# 🚀 JavaScript Application Template with GitHub Copilot
+# 🎮 RETRO TETRIS ～80年代アーケード風テトリス～
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
@@ -6,188 +6,185 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-> **GitHub Copilot** と **GitHub Coding Agent** を活用したモダンな JavaScript アプリケーション開発のためのテンプレートリポジトリ
+```
+████████╗███████╗████████╗██████╗ ██╗███████╗
+╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝
+   ██║   █████╗     ██║   ██████╔╝██║███████╗
+   ██║   ██╔══╝     ██║   ██╔══██╗██║╚════██║
+   ██║   ███████╗   ██║   ██║  ██║██║███████║
+   ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝
+```
 
-## 📋 概要
+> 🕹️ **あの頃のゲームセンターが蘇る！** 80年代のドット絵スタイルで楽しむ、懐かしくも新しいテトリス体験
 
-このリポジトリは、AI 駆動開発ツールを使用して効率的な JavaScript アプリケーション開発を実現するための包括的なテンプレートです。最新の Web 技術スタックと開発手法を組み合わせ、迅速なプロトタイピングから本格的なアプリケーション開発まで対応します。
+---
+
+## 🎮 今すぐプレイ！
+
+<div align="center">
+
+### 👇 ゲームを起動 👇
+
+# **[▶️ GAME START](src/index.html)**
+
+*GitHub Pages でも公開予定です*
+
+</div>
+
+---
+
+## 📸 スクリーンショット
+
+<div align="center">
+
+![ゲームプレイ画面](https://github.com/user-attachments/assets/44b18bce-8097-4638-a6b5-379e9cafe5f4)
+
+*80年代アーケードゲームの雰囲気を再現したゲーム画面*
+
+</div>
+
+---
+
+## 🕹️ ゲーム概要
+
+「RETRO TETRIS」は、1980年代のアーケードゲームをオマージュした完全フリーのテトリスクローンです。
+
+ブラウザで直接動作するため、インストール不要！HTMLファイルを開くだけで、懐かしのゲーム体験をお楽しみいただけます。
 
 ### ✨ 主な特徴
 
-- 🤖 **AI ファーストな開発体験** - GitHub Copilot & Coding Agent 完全対応
-- ⚡ **ゼロ設定で即座に開始** - ブラウザで直接実行可能
-- 🎨 **モダンな UI/UX** - Tailwind CSS による美しいデザイン
-- 📱 **レスポンシブデザイン** - あらゆるデバイスに対応
-- 🛠️ **開発者フレンドリー** - 明確なコーディング規約とベストプラクティス
+| 機能 | 説明 |
+|------|------|
+| 🎨 **ドット絵スタイル** | 80年代アーケードゲームを彷彿とさせるレトロなビジュアル |
+| 🎵 **コロベイニキBGM** | Web Audio APIで実装された懐かしのメロディ |
+| 🔊 **効果音** | 移動、回転、ライン消去などのサウンドエフェクト |
+| 🏆 **スコアシステム** | ハイスコアはローカルストレージに自動保存 |
+| 📈 **レベルシステム** | 10ライン消去毎にレベルアップ、落下速度が加速！ |
+| 🎚️ **難易度設定** | EASY / NORMAL / HARD の3段階から選択 |
+| 👻 **ゴーストピース** | 落下位置をプレビュー表示 |
+| ⏸️ **一時停止機能** | いつでも中断・再開が可能 |
 
-## 🛠️ 技術スタック
+---
 
-### フロントエンド
+## 🎮 操作方法
 
-| 技術                                     | バージョン | 用途                         |
-| ---------------------------------------- | ---------- | ---------------------------- |
-| HTML5                                    | Latest     | セマンティックなマークアップ |
-| CSS3                                     | Latest     | スタイリング                 |
-| [Tailwind CSS](https://tailwindcss.com/) | 3.x (CDN)  | ユーティリティファースト CSS |
-| JavaScript                               | ES6+       | インタラクティブな機能       |
+```
+┌─────────────────────────────────────────────────┐
+│                  CONTROLS                        │
+├─────────────────────────────────────────────────┤
+│  ← →     ブロックを左右に移動                    │
+│   ↑      ブロックを回転                          │
+│   ↓      ブロックを高速落下（ソフトドロップ）    │
+│ SPACE    一番下まで即座に落下（ハードドロップ）  │
+│   P      一時停止 / 再開                         │
+│   R      ゲームをリセット                        │
+│   S      ゲーム開始                              │
+└─────────────────────────────────────────────────┘
+```
 
-### 開発ツール
+---
 
-- **GitHub Copilot** - AI ペアプログラミング
-- **GitHub Coding Agent** - 自動コード生成
-- **Visual Studio Code** - 推奨 IDE
+## 🧱 テトリミノ（ブロック）
+
+全7種類のテトリミノが登場！
+
+```
+  ■■■■     ■■      ■        ■      ■■       ■■      ■■■
+    I      ■■      ■■■    ■■■       ■■     ■■        ■
+           O        J       L        S       Z        T
+```
+
+---
+
+## 🚀 遊び方
+
+### ブラウザで直接起動
+
+1. このリポジトリをクローンまたはダウンロード
+   ```bash
+   git clone https://github.com/your-username/20251127-copilot-tetris.git
+   ```
+
+2. `src/index.html` をブラウザで開く
+
+3. 難易度を選択して **[S]キー** でゲームスタート！
+
+### 動作環境
+
+- モダンな Web ブラウザ（Chrome 90+, Firefox 88+, Safari 14+, Edge 90+）
+- サーバー不要、ローカルPCで動作
+
+---
 
 ## 📁 プロジェクト構造
 
 ```
-📦 JSApp-Template-001/
-├── 📄 README.md                 # プロジェクト概要
-├── 📄 .github/
-│   └── 📄 copilot-instructions.md  # Copilot 設定
-└── 📁 src/                      # アプリケーションソース
-    ├── 📄 index.html            # メインHTML
-    ├── 📁 css/                  # スタイルシート
-    │   └── 📄 styles.css        # カスタムCSS
-    ├── 📁 js/                   # JavaScript
-    │   └── 📄 script.js         # メインスクリプト
-    └── 📁 assets/               # 静的リソース
-        └── 📁 images/           # 画像ファイル
+📦 20251127-copilot-tetris/
+├── 📄 Readme.md              # このファイル
+├── 📄 LICENSE                # MITライセンス
+├── 📁 src/                   # アプリケーションソース
+│   ├── 📄 index.html         # メインHTML（ゲーム本体）
+│   ├── 📁 css/
+│   │   └── 📄 styles.css     # カスタムスタイル
+│   └── 📁 js/
+│       └── 📄 script.js      # ゲームロジック
+└── 📁 docs/                  # ドキュメント
+    ├── 📄 RequirementsDefinition.md
+    └── 📄 techspec.md
 ```
 
-## 🚀 クイックスタート
+---
 
-### 前提条件
+## 🛠️ 技術スタック
 
-- 📌 モダンな Web ブラウザ (Chrome 90+, Firefox 88+, Safari 14+)
-- 📌 Visual Studio Code (推奨)
-- 📌 GitHub Copilot サブスクリプション
+| 技術 | 用途 |
+|------|------|
+| **HTML5** | ゲーム画面の構造・Canvas要素 |
+| **CSS3 (Tailwind CSS)** | レトロスタイルのUI・レスポンシブデザイン |
+| **JavaScript (ES6+)** | ゲームロジック・操作制御 |
+| **Web Audio API** | BGM・効果音の再生 |
+| **LocalStorage API** | ハイスコアの永続化 |
 
-### セットアップ手順
+---
 
-#### 🤖 GitHub Coding Agent を使用する場合
+## 🎯 スコアシステム
 
-1. **リポジトリの作成**
+| アクション | 得点 |
+|------------|------|
+| 1ライン消去 | 100 × レベル |
+| 2ライン同時消去 | 300 × レベル |
+| 3ライン同時消去 | 500 × レベル |
+| 4ライン同時消去（テトリス！） | 800 × レベル |
+| ソフトドロップ | 落下距離 × 1 |
+| ハードドロップ | 落下距離 × 2 |
 
-   ```bash
-   # このテンプレートから新しいリポジトリを作成
-   gh repo create my-js-app --template JSApp-Template-001
-   ```
+---
 
-2. **Issue の作成と Coding Agent の起動**
-
-   - リポジトリに新しい Issue を作成
-   - 開発要件を詳細に記述
-   - `@copilot` で Coding Agent をアサイン
-
-3. **自動開発プロセス**
-
-   - Coding Agent が要件を分析
-   - 自動的にコードを生成
-   - Pull Request として提案
-
-4. **レビューとデプロイ**
-   - 生成されたコードをレビュー
-   - main ブランチにマージ
-   - GitHub Pages でライブデモを確認
-
-#### 💻 GitHub Copilot Agent Mode (ローカル開発) を使用する場合
-
-1. **リポジトリのクローン**
-
-   ```bash
-   git clone https://github.com/tokawa-ms/JSApp-Template-001.git
-   cd JSApp-Template-001
-   ```
-
-2. **開発環境の準備**
-
-   ```bash
-   # Visual Studio Code で開く
-   code .
-   ```
-
-3. **Copilot の設定**
-
-   - VS Code で GitHub Copilot 拡張機能を有効化
-   - Agent モードに切り替え
-   - チャットウィンドウを開く
-
-4. **開発開始**
-   - 自然言語でプロンプトを入力
-   - Copilot の提案を確認・適用
-   - ブラウザで `src/index.html` を開いて動作確認
-
-## 💡 使用例とサンプルプロンプト
-
-### 基本的なアプリケーション作成
-
-```
-「ToDoリストアプリを作成してください。追加、削除、完了マークの機能を含めてください。」
-```
-
-### インタラクティブな機能追加
-
-```
-「現在の天気情報を表示するウィジェットを追加してください。API キーは設定画面で入力できるようにしてください。」
-```
-
-### UI/UX の改善
-
-```
-「Tailwind CSS を使用してダークモード対応のモダンなデザインに変更してください。」
-```
-
-## 📱 レスポンシブデザイン対応
-
-このテンプレートは以下の画面サイズに最適化されています：
-
-- 📱 **モバイル**: 320px〜768px
-- 📊 **タブレット**: 768px〜1024px
-- 💻 **デスクトップ**: 1024px 以上
-
-## 🔒 セキュリティとベストプラクティス
-
-### API キーの取り扱い
-
-- ✅ 環境変数や UI 入力フィールドを使用
-- ❌ ハードコーディングは禁止
-- 🔐 開発用のテストキーのみ使用
-
-### コード品質
-
-- 📋 ESLint ルールに準拠
-- 📝 適切なコメント記述
-- 🧪 エラーハンドリングの実装
-
-## 🤝 コントリビューション
-
-プロジェクトへの貢献を歓迎します！
-
-1. このリポジトリをフォーク
-2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add amazing feature'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
-5. Pull Request を作成
-
-## 📄 ライセンス
+## 📜 ライセンス
 
 このプロジェクトは [MIT License](LICENSE) の下で公開されています。
 
-## 🆘 サポートとリソース
+---
 
-- 📖 **ドキュメント**: [GitHub Copilot Docs](https://docs.github.com/en/copilot)
-- 💬 **コミュニティ**: [GitHub Discussions](https://github.com/github/copilot-docs/discussions)
-- 🐛 **Issue 報告**: [Issues](https://github.com/tokawa-ms/JSApp-Template-001/issues)
+## 🙏 謝辞
 
-## 📊 プロジェクト統計
-
-![GitHub stars](https://img.shields.io/github/stars/tokawa-ms/JSApp-Template-001?style=social)
-![GitHub forks](https://img.shields.io/github/forks/tokawa-ms/JSApp-Template-001?style=social)
-![GitHub issues](https://img.shields.io/github/issues/tokawa-ms/JSApp-Template-001)
+- テトリスのオリジナルデザイン: アレクセイ・パジトノフ氏
+- BGM「コロベイニキ」: ロシア民謡
 
 ---
 
 <div align="center">
-  <strong>🚀 Happy Coding with AI! 🤖</strong><br>
-  Made with ❤️ and GitHub Copilot
+
+```
+╔════════════════════════════════════════════════════╗
+║                                                    ║
+║     🎮 INSERT COIN TO PLAY 🎮                      ║
+║                                                    ║
+║          PRESS [S] TO START                        ║
+║                                                    ║
+╚════════════════════════════════════════════════════╝
+```
+
+**Made with ❤️ and レトロゲームへの愛**
+
 </div>
