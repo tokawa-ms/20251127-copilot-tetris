@@ -1234,24 +1234,41 @@ const KOROBEINIKI_BASS = [
     { note: 'A3', duration: 1.6 }
 ];
 
-let melodyIndex = 0;
-let bassIndex = 0;
-let melodyTimeout = null;
-let bassTimeout = null;
+// BGMスケジューリング用変数
+let bgmScheduleTimeout = null;
+let bgmStartTime = 0;
+let scheduledOscillators = [];
+
+// BGMスケジューリング用定数
+const SCHEDULE_AHEAD_TIME = 1.0;        // 次のコーラスを何秒前にスケジュールするか
+const IMMEDIATE_PLAYBACK_THRESHOLD = 0.1; // 即時再生とみなす閾値（秒）
+
+// 1コーラスの長さを計算（メロディとベースは同じ長さであることを想定）
+const MELODY_DURATION = KOROBEINIKI_MELODY.reduce((sum, note) => sum + note.duration, 0);
+// 注: ベースの長さがメロディと異なる場合は、短い方に合わせるか、別途調整が必要
+const BASS_DURATION = KOROBEINIKI_BASS.reduce((sum, note) => sum + note.duration, 0);
+const CHORUS_DURATION = Math.max(MELODY_DURATION, BASS_DURATION);
 
 /**
  * BGMを開始
+ * 
+ * Web Audio API のスケジューリング機能を使用して、
+ * メロディとベースを同じ基準時間から正確にスケジュールします。
+ * これにより、setTimeout の精度問題による音ずれを防ぎます。
  */
 function startBGM() {
     if (bgmPlaying || !audioContext) return;
     
     console.log('[テトリス] BGM開始: コロベイニキ');
+    console.log(`[テトリス] メロディ長: ${MELODY_DURATION}秒, ベース長: ${BASS_DURATION}秒`);
     bgmPlaying = true;
-    melodyIndex = 0;
-    bassIndex = 0;
+    scheduledOscillators = [];
     
-    playMelodyNote();
-    playBassNote();
+    // 基準時間を設定
+    bgmStartTime = audioContext.currentTime;
+    
+    // 最初のコーラスをスケジュール
+    scheduleNextChorus();
 }
 
 /**
@@ -1261,88 +1278,147 @@ function stopBGM() {
     console.log('[テトリス] BGM停止');
     bgmPlaying = false;
     
-    if (melodyTimeout) {
-        clearTimeout(melodyTimeout);
-        melodyTimeout = null;
+    if (bgmScheduleTimeout) {
+        clearTimeout(bgmScheduleTimeout);
+        bgmScheduleTimeout = null;
     }
-    if (bassTimeout) {
-        clearTimeout(bassTimeout);
-        bassTimeout = null;
-    }
+    
+    // スケジュール済みのオシレーターを停止
+    const now = audioContext ? audioContext.currentTime : 0;
+    scheduledOscillators.forEach(osc => {
+        try {
+            osc.stop(now);
+        } catch (e) {
+            // 既に停止している場合は無視
+        }
+    });
+    scheduledOscillators = [];
 }
 
 /**
- * メロディの音符を再生
+ * 次のコーラスをスケジュール
+ * 
+ * 先読みスケジューリング方式：
+ * 現在再生中のコーラスが終わる前に次のコーラスをスケジュールすることで、
+ * 途切れのない連続再生を実現します。
  */
-function playMelodyNote() {
+function scheduleNextChorus() {
     if (!bgmPlaying || !bgmEnabled || !audioContext) return;
     
-    const noteData = KOROBEINIKI_MELODY[melodyIndex];
-    const frequency = NOTE_FREQUENCIES[noteData.note];
-    const duration = noteData.duration;
+    const currentTime = audioContext.currentTime;
     
-    if (frequency > 0) {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+    // 次のコーラスの開始時刻を計算
+    // 基準時間からの経過時間を元に、次のコーラスの開始位置を決定
+    let chorusStartTime;
+    if (bgmStartTime === 0 || currentTime >= bgmStartTime + CHORUS_DURATION) {
+        // 新しいコーラスの開始
+        const elapsed = currentTime - bgmStartTime;
+        const chorusCount = Math.floor(elapsed / CHORUS_DURATION);
+        chorusStartTime = bgmStartTime + (chorusCount + 1) * CHORUS_DURATION;
         
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.type = 'square';
-        oscillator.frequency.value = frequency;
-        
-        // 音量エンベロープ
-        gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.06, audioContext.currentTime + duration * 0.1);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration * 0.9);
-        
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + duration);
+        // 最初の再生時は即座に開始
+        if (elapsed < IMMEDIATE_PLAYBACK_THRESHOLD) {
+            chorusStartTime = currentTime;
+            bgmStartTime = currentTime;
+        }
+    } else {
+        chorusStartTime = bgmStartTime;
     }
     
-    // 次の音符へ
-    melodyIndex = (melodyIndex + 1) % KOROBEINIKI_MELODY.length;
+    console.log(`[テトリス] コーラスをスケジュール: 開始時刻=${chorusStartTime.toFixed(2)}秒`);
     
-    melodyTimeout = setTimeout(() => {
-        playMelodyNote();
-    }, duration * 1000);
+    // メロディをスケジュール
+    scheduleMelody(chorusStartTime);
+    
+    // ベースをスケジュール（同じ開始時刻）
+    scheduleBass(chorusStartTime);
+    
+    // 次のコーラスのスケジューリングをセット
+    // コーラス終了の少し前に次のコーラスをスケジュール
+    const timeUntilNextSchedule = (chorusStartTime + CHORUS_DURATION - SCHEDULE_AHEAD_TIME) - currentTime;
+    const scheduleDelay = Math.max(100, timeUntilNextSchedule * 1000);
+    
+    bgmScheduleTimeout = setTimeout(() => {
+        scheduleNextChorus();
+    }, scheduleDelay);
 }
 
 /**
- * ベースの音符を再生
+ * メロディをスケジュール
+ * 
+ * @param {number} startTime - コーラスの開始時刻（audioContext.currentTime基準）
  */
-function playBassNote() {
-    if (!bgmPlaying || !bgmEnabled || !audioContext) return;
+function scheduleMelody(startTime) {
+    if (!audioContext) return;
     
-    const noteData = KOROBEINIKI_BASS[bassIndex];
-    const frequency = NOTE_FREQUENCIES[noteData.note];
-    const duration = noteData.duration;
+    let noteTime = startTime;
     
-    if (frequency > 0) {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+    KOROBEINIKI_MELODY.forEach((noteData, index) => {
+        const frequency = NOTE_FREQUENCIES[noteData.note];
+        const duration = noteData.duration;
         
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+        if (frequency > 0) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'square';
+            oscillator.frequency.value = frequency;
+            
+            // 音量エンベロープ
+            gainNode.gain.setValueAtTime(0.08, noteTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.06, noteTime + duration * 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, noteTime + duration * 0.9);
+            
+            oscillator.start(noteTime);
+            oscillator.stop(noteTime + duration);
+            
+            scheduledOscillators.push(oscillator);
+        }
         
-        oscillator.type = 'triangle';
-        oscillator.frequency.value = frequency;
-        
-        // 音量エンベロープ
-        gainNode.gain.setValueAtTime(0.06, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.04, audioContext.currentTime + duration * 0.2);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration * 0.95);
-        
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + duration);
-    }
+        noteTime += duration;
+    });
+}
+
+/**
+ * ベースをスケジュール
+ * 
+ * @param {number} startTime - コーラスの開始時刻（audioContext.currentTime基準）
+ */
+function scheduleBass(startTime) {
+    if (!audioContext) return;
     
-    // 次の音符へ
-    bassIndex = (bassIndex + 1) % KOROBEINIKI_BASS.length;
+    let noteTime = startTime;
     
-    bassTimeout = setTimeout(() => {
-        playBassNote();
-    }, duration * 1000);
+    KOROBEINIKI_BASS.forEach((noteData, index) => {
+        const frequency = NOTE_FREQUENCIES[noteData.note];
+        const duration = noteData.duration;
+        
+        if (frequency > 0) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'triangle';
+            oscillator.frequency.value = frequency;
+            
+            // 音量エンベロープ
+            gainNode.gain.setValueAtTime(0.06, noteTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.04, noteTime + duration * 0.2);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, noteTime + duration * 0.95);
+            
+            oscillator.start(noteTime);
+            oscillator.stop(noteTime + duration);
+            
+            scheduledOscillators.push(oscillator);
+        }
+        
+        noteTime += duration;
+    });
 }
 
 console.log('[テトリス] ゲームスクリプト読み込み完了');
