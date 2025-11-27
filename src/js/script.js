@@ -22,8 +22,14 @@ console.log('[テトリス] ゲームスクリプトを読み込み中...');
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 24;
+const NEXT_BLOCK_SIZE = 20;  // NEXTプレビュー用のブロックサイズ
 
-// テトリミノの定義（各形状とその回転状態）
+// ブロック描画用の定数
+const BLOCK_PADDING = 1;        // ブロック間のパディング
+const BLOCK_EDGE_WIDTH = 3;     // ブロックのハイライト/シャドウの幅
+const BLOCK_DOT_SIZE = 4;       // ブロック内のドットのサイズ
+
+// テトリミノの定義（基本形状のみ、回転はrotateMatrix関数で動的に処理）
 const TETROMINOS = {
     I: {
         shape: [
@@ -752,7 +758,8 @@ function drawBoard() {
  */
 function drawBlock(context, x, y, color) {
     const size = BLOCK_SIZE;
-    const padding = 1;
+    const padding = BLOCK_PADDING;
+    const edgeWidth = BLOCK_EDGE_WIDTH;
     
     // メインカラー
     context.fillStyle = color;
@@ -769,12 +776,12 @@ function drawBlock(context, x, y, color) {
         x * size + padding,
         y * size + padding,
         size - padding * 2,
-        3
+        edgeWidth
     );
     context.fillRect(
         x * size + padding,
         y * size + padding,
-        3,
+        edgeWidth,
         size - padding * 2
     );
     
@@ -782,24 +789,25 @@ function drawBlock(context, x, y, color) {
     context.fillStyle = darkenColor(color, 40);
     context.fillRect(
         x * size + padding,
-        y * size + size - padding - 3,
+        y * size + size - padding - edgeWidth,
         size - padding * 2,
-        3
+        edgeWidth
     );
     context.fillRect(
-        x * size + size - padding - 3,
+        x * size + size - padding - edgeWidth,
         y * size + padding,
-        3,
+        edgeWidth,
         size - padding * 2
     );
     
-    // 内側のドット
+    // 内側のドット（ブロック中央にハイライト）
+    const dotOffset = Math.floor(size / 4);
     context.fillStyle = lightenColor(color, 20);
     context.fillRect(
-        x * size + 6,
-        y * size + 6,
-        4,
-        4
+        x * size + dotOffset,
+        y * size + dotOffset,
+        BLOCK_DOT_SIZE,
+        BLOCK_DOT_SIZE
     );
 }
 
@@ -835,8 +843,8 @@ function drawNextPiece() {
     // 中央に配置するためのオフセット計算
     const pieceWidth = nextPiece.shape[0].length;
     const pieceHeight = nextPiece.shape.length;
-    const offsetX = (nextCanvas.width - pieceWidth * 20) / 2;
-    const offsetY = (nextCanvas.height - pieceHeight * 20) / 2;
+    const offsetX = (nextCanvas.width - pieceWidth * NEXT_BLOCK_SIZE) / 2;
+    const offsetY = (nextCanvas.height - pieceHeight * NEXT_BLOCK_SIZE) / 2;
     
     for (let row = 0; row < nextPiece.shape.length; row++) {
         for (let col = 0; col < nextPiece.shape[row].length; col++) {
@@ -851,8 +859,8 @@ function drawNextPiece() {
  * 小さいブロックを描画（NEXTプレビュー用）
  */
 function drawBlockSmall(context, x, y, color, offsetX, offsetY) {
-    const size = 20;
-    const padding = 1;
+    const size = NEXT_BLOCK_SIZE;
+    const padding = BLOCK_PADDING;
     
     context.fillStyle = color;
     context.fillRect(
@@ -1113,9 +1121,9 @@ function playGameOverSound() {
  * 記号説明:
  * - E, D, C, B, A, G, F = 音名
  * - ↓ = 1オクターブ下
- * - 四分 = 四分音符（0.5秒）
- * - 八分 = 八分音符（0.25秒）
- * - 二分 = 二分音符（1秒）
+ * - 四分 = 四分音符（0.4秒）
+ * - 八分 = 八分音符（0.2秒）
+ * - 二分 = 二分音符（0.8秒）
  * - 休み = 休符
  */
 
@@ -1137,6 +1145,7 @@ const NOTE_FREQUENCIES = {
     'E5': 659.26,
     'F5': 698.46,
     'G5': 783.99,
+    'A5': 880.00,
     // 休符
     'REST': 0
 };
@@ -1177,7 +1186,7 @@ const KOROBEINIKI_MELODY = [
     { note: 'REST', duration: 0.2 },
     { note: 'D5', duration: 0.4 },
     { note: 'F5', duration: 0.2 },
-    { note: 'A4', duration: 0.4 },  // オクターブ上のA
+    { note: 'A5', duration: 0.4 },  // 高いA（A5）
     { note: 'G5', duration: 0.2 },
     { note: 'F5', duration: 0.2 },
     
