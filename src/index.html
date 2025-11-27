@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>レトロテトリス - 80年代スタイル</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- ゲームコンテナ -->
+    <div id="game-container">
+        
+        <!-- 左側パネル - 次のブロック＆スコア -->
+        <div class="game-panel">
+            <div class="panel-section">
+                <h3 class="panel-title">NEXT</h3>
+                <canvas id="next-canvas" width="100" height="100"></canvas>
+            </div>
+            <div class="panel-section">
+                <h3 class="panel-title">SCORE</h3>
+                <div id="score" class="score-display">0</div>
+            </div>
+            <div class="panel-section">
+                <h3 class="panel-title">HIGH SCORE</h3>
+                <div id="high-score" class="score-display">0</div>
+            </div>
+            <div class="panel-section">
+                <h3 class="panel-title">LEVEL</h3>
+                <div id="level" class="score-display">1</div>
+            </div>
+            <div class="panel-section">
+                <h3 class="panel-title">LINES</h3>
+                <div id="lines" class="score-display">0</div>
+            </div>
+        </div>
+
+        <!-- メインゲームエリア -->
+        <div class="main-game-area">
+            <h1 class="game-title">TETRIS</h1>
+            <div class="game-board-container">
+                <canvas id="game-canvas" width="240" height="480"></canvas>
+                <!-- ゲームオーバーオーバーレイ -->
+                <div id="game-over-overlay" class="hidden">
+                    <div class="game-over-content">
+                        <h2 class="game-over-title">GAME OVER</h2>
+                        <p class="game-over-score">SCORE: <span id="final-score">0</span></p>
+                        <button id="restart-btn" class="retro-btn">RESTART</button>
+                    </div>
+                </div>
+                <!-- 一時停止オーバーレイ -->
+                <div id="pause-overlay" class="hidden">
+                    <div class="pause-content">
+                        <h2 class="pause-title">PAUSED</h2>
+                        <p class="pause-hint">Press P to Resume</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側パネル - 操作説明＆設定 -->
+        <div class="game-panel wide">
+            <div class="panel-section">
+                <h3 class="panel-title">CONTROLS</h3>
+                <ul class="controls-list">
+                    <li><span class="key">←→</span> 移動</li>
+                    <li><span class="key">↑</span> 回転</li>
+                    <li><span class="key">↓</span> 落下加速</li>
+                    <li><span class="key">SPACE</span> 即落下</li>
+                    <li><span class="key">P</span> 一時停止</li>
+                    <li><span class="key">R</span> リセット</li>
+                    <li><span class="key">S</span> スタート</li>
+                </ul>
+            </div>
+            <div class="panel-section">
+                <h3 class="panel-title">SETTINGS</h3>
+                <div class="setting-item">
+                    <label for="difficulty" class="setting-label">難易度</label>
+                    <select id="difficulty" class="retro-select">
+                        <option value="easy">EASY</option>
+                        <option value="normal" selected>NORMAL</option>
+                        <option value="hard">HARD</option>
+                    </select>
+                </div>
+                <div class="setting-item checkbox-item">
+                    <input type="checkbox" id="sound-toggle" class="retro-checkbox" checked>
+                    <label for="sound-toggle" class="setting-label">SOUND</label>
+                </div>
+                <div class="setting-item checkbox-item">
+                    <input type="checkbox" id="bgm-toggle" class="retro-checkbox" checked>
+                    <label for="bgm-toggle" class="setting-label">BGM</label>
+                </div>
+            </div>
+            <div class="panel-section button-section">
+                <button id="start-btn" class="retro-btn full-width">START</button>
+                <button id="pause-btn" class="retro-btn full-width" disabled>PAUSE</button>
+                <button id="reset-btn" class="retro-btn full-width">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- フッター -->
+    <footer class="footer">
+        <p class="footer-text">© 2024 RETRO TETRIS - 80's Style Gaming</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
